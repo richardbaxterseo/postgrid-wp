@@ -22,6 +22,24 @@ class PostGrid {
 		
 		// Register REST API endpoint
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		
+		// Ensure frontend styles are loaded
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
+	}
+	
+	/**
+	 * Enqueue frontend styles
+	 */
+	public function enqueue_frontend_styles() {
+		// Only enqueue if we have the PostGrid block on the page
+		if ( has_block( 'postgrid/postgrid' ) ) {
+			wp_enqueue_style(
+				'postgrid-frontend-styles',
+				POSTGRID_PLUGIN_URL . 'src/style.css',
+				array(),
+				POSTGRID_VERSION
+			);
+		}
 	}
 	
 	/**

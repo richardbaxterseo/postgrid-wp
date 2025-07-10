@@ -2,6 +2,17 @@
 
 All notable changes to PostGrid will be documented in this file.
 
+## [0.1.2] - 2025-01-10
+
+### Fixed
+- Fixed frontend CSS not loading by correcting asset paths in block.json
+- Added fallback style enqueueing to ensure styles load on frontend
+- Fixed block.json to reference source files directly instead of missing build files
+
+### Changed
+- Updated block.json to point to src directory for scripts and styles
+- Added manual style enqueue method as backup for frontend styling
+
 ## [0.1.1] - 2025-01-10
 
 ### Fixed
