@@ -20,5 +20,5 @@ return array(
 		'wp-html-entities',
 		'wp-date',
 	),
-	'version' => '0.1.7',
+	'version' => '0.1.8',
 );

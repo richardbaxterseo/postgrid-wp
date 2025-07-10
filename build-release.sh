@@ -5,7 +5,7 @@
 #
 
 PLUGIN_SLUG="postgrid"
-VERSION="0.1.7"
+VERSION="0.1.8"
 BUILD_DIR="./release-build"
 ZIP_FILE="${PLUGIN_SLUG}-v${VERSION}.zip"
 

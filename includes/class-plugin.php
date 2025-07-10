@@ -106,7 +106,7 @@ class Plugin {
 		_doing_it_wrong( 
 			__FUNCTION__, 
 			esc_html__( 'PostGrid Plugin class is a singleton and should not be cloned.', 'postgrid' ),
-			'0.1.7'
+			'0.1.8'
 		);
 	}
 	
@@ -117,7 +117,7 @@ class Plugin {
 		_doing_it_wrong( 
 			__FUNCTION__, 
 			esc_html__( 'PostGrid Plugin class is a singleton and should not be unserialized.', 'postgrid' ),
-			'0.1.7'
+			'0.1.8'
 		);
 	}
 	
