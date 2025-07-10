@@ -2,6 +2,18 @@
 
 All notable changes to PostGrid will be documented in this file.
 
+## [0.1.1] - 2025-01-10
+
+### Fixed
+- Fixed PSR-4 autoloader to properly map namespace classes to file paths
+- Resolved "Class 'PostGrid\PostGrid' not found" fatal error
+- Corrected plugin folder name in ZIP from 'postgrid-wp' to 'postgrid'
+- Improved GitHub Actions release workflow for proper WordPress plugin structure
+
+### Changed
+- Updated build scripts to create correct plugin directory structure
+- Enhanced error handling in autoloader
+
 ## [0.1.0] - 2025-01-10
 
 ### Added

@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/yourusername/postgrid
  * Description: A lightweight posts grid block for WordPress
  * Author: Your Name
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author URI: https://yourwebsite.com/
  * Text Domain: postgrid
  * Domain Path: /languages
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'POSTGRID_VERSION', '0.1.0' );
+define( 'POSTGRID_VERSION', '0.1.1' );
 define( 'POSTGRID_PLUGIN_FILE', __FILE__ );
 define( 'POSTGRID_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'POSTGRID_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

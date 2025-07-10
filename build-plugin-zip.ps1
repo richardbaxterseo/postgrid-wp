@@ -1,8 +1,8 @@
 # PostGrid WordPress Plugin ZIP Builder
 # This script creates a clean plugin ZIP file for distribution
 
-$pluginName = "postgrid"  # Changed from postgrid-wp to postgrid
-$version = "0.1.1"  # Bumped version for the fix
+$pluginName = "postgrid"
+$version = "0.1.1"
 $sourceDir = "C:\dev\wp\caxton"
 $outputDir = "C:\dev\wp\caxton\dist"
 $zipName = "$pluginName-v$version.zip"
@@ -52,8 +52,6 @@ foreach ($item in $includeItems) {
             Copy-Item -Path $sourcePath -Destination $destPath
             Write-Host "  Copied file: $item" -ForegroundColor Gray
         }
-    } else {
-        Write-Host "  Info: $item not found (may not be needed)" -ForegroundColor DarkGray
     }
 }
 
@@ -66,7 +64,7 @@ if (Test-Path $zipPath) {
     Remove-Item $zipPath -Force
 }
 
-# Create ZIP from the temp directory (this ensures postgrid/ is the root folder in the ZIP)
+# Create ZIP from the temp directory
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::CreateFromDirectory($tempDir, $zipPath, 'Optimal', $false)
 
@@ -78,12 +76,6 @@ $zipSize = (Get-Item $zipPath).Length / 1MB
 Write-Host "`nSuccess!" -ForegroundColor Green
 Write-Host "Created: $zipPath" -ForegroundColor Cyan
 Write-Host "Size: $([math]::Round($zipSize, 2)) MB" -ForegroundColor Cyan
-Write-Host "`nThe plugin folder structure in the ZIP is:" -ForegroundColor Yellow
-Write-Host "  postgrid/" -ForegroundColor Gray
-Write-Host "  ├── postgrid.php" -ForegroundColor Gray
-Write-Host "  ├── readme.txt" -ForegroundColor Gray
-Write-Host "  ├── block.json" -ForegroundColor Gray
-Write-Host "  └── includes/" -ForegroundColor Gray
 
 # Open the output directory
 Start-Process explorer.exe $outputDir
