@@ -2,6 +2,27 @@
 
 All notable changes to PostGrid will be documented in this file.
 
+## [0.1.5] - 2025-01-10
+
+### Fixed
+- Fixed "Your site doesn't include support for the 'caxton/posts-grid' block" error in Gutenberg
+- Created build directory with transpiled JavaScript for proper block registration
+- Fixed JavaScript module loading issues by providing WordPress-compatible vanilla JS
+- Improved block registration timing and error handling
+- Enhanced caxton/posts-grid compatibility with proper render callbacks
+
+### Added
+- Build directory with compiled assets (index.js, style-index.css, index.css)
+- Vanilla JavaScript block registration that works without build tools
+- ServerSideRender support for live preview in the editor
+- Enhanced diagnostic tool (postgrid-block-diagnostic.php) for troubleshooting
+- Proper registration of both postgrid/postgrid and caxton/posts-grid blocks in JavaScript
+
+### Changed
+- Improved error logging for block registration failures
+- Updated PostGrid class to handle missing build directories gracefully
+- Enhanced legacy block support with direct instantiation
+
 ## [0.1.4] - 2025-01-10
 
 ### Fixed

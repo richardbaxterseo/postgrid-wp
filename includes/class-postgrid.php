@@ -15,11 +15,10 @@ class PostGrid {
 	 * Initialize the plugin
 	 */
 	public function init() {
-		// Check if we're using build or src directory
-		$script_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/index.js' ) ? 'build' : 'src';
+		// Register block type from block.json
 		$block_json_path = POSTGRID_PLUGIN_DIR . 'block.json';
 		
-		// Register block with proper asset handling
+		// Ensure the block is registered with proper script handling
 		$result = register_block_type( $block_json_path, array(
 			'render_callback' => array( $this, 'render_block' ),
 		) );
@@ -27,6 +26,8 @@ class PostGrid {
 		// If registration failed, log error
 		if ( ! $result ) {
 			error_log( 'PostGrid: Failed to register block type from ' . $block_json_path );
+		} else {
+			error_log( 'PostGrid: Successfully registered block type postgrid/postgrid' );
 		}
 		
 		// Register REST API endpoint
@@ -35,8 +36,8 @@ class PostGrid {
 		// Ensure frontend styles are loaded
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
 		
-		// Ensure editor styles are loaded
-		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_assets' ) );
+		// Ensure editor assets are loaded properly
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_assets' ), 5 );
 		
 		// Add support for caxton/posts-grid blocks
 		add_action( 'init', array( $this, 'register_caxton_compatibility' ), 20 );
@@ -94,28 +95,22 @@ class PostGrid {
 	
 	/**
 	 * Enqueue editor assets
+	 * This is a fallback in case block.json doesn't load the scripts properly
 	 */
 	public function enqueue_editor_assets() {
-		$script_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/index.js' ) ? 'build' : 'src';
-		
-		// Register and enqueue editor script
-		wp_register_script(
-			'postgrid-editor',
-			POSTGRID_PLUGIN_URL . $script_dir . '/index.js',
-			array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-i18n' ),
-			POSTGRID_VERSION,
-			true
-		);
-		
-		wp_enqueue_script( 'postgrid-editor' );
-		
-		// Enqueue editor styles
-		wp_enqueue_style(
-			'postgrid-editor-styles',
-			POSTGRID_PLUGIN_URL . $script_dir . '/style.css',
-			array( 'wp-edit-blocks' ),
-			POSTGRID_VERSION
-		);
+		// Only enqueue if not already loaded by block.json
+		if ( ! wp_script_is( 'postgrid-postgrid-editor-script', 'enqueued' ) ) {
+			$script_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/index.js' ) ? 'build' : 'src';
+			
+			// Register and enqueue editor script with proper dependencies
+			wp_enqueue_script(
+				'postgrid-editor-fallback',
+				POSTGRID_PLUGIN_URL . $script_dir . '/index.js',
+				array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-i18n', 'wp-server-side-render' ),
+				POSTGRID_VERSION,
+				true
+			);
+		}
 	}
 	
 	/**

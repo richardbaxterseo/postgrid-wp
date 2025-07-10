@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/yourusername/postgrid
  * Description: A lightweight posts grid block for WordPress
  * Author: Your Name
- * Version: 0.1.4
+ * Version: 0.1.5
  * Author URI: https://yourwebsite.com/
  * Text Domain: postgrid
  * Domain Path: /languages
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'POSTGRID_VERSION', '0.1.4' );
+define( 'POSTGRID_VERSION', '0.1.5' );
 define( 'POSTGRID_PLUGIN_FILE', __FILE__ );
 define( 'POSTGRID_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'POSTGRID_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -89,17 +89,51 @@ function postgrid_activation() {
  * This ensures the caxton/posts-grid block is recognised
  */
 function postgrid_register_legacy_support() {
-	// Register the caxton/posts-grid block as an alias
-	if ( \WP_Block_Type_Registry::get_instance()->is_registered( 'postgrid/postgrid' ) ) {
-		// Get the registered PostGrid block
-		$postgrid_block = \WP_Block_Type_Registry::get_instance()->get_registered( 'postgrid/postgrid' );
+	// Wait a bit to ensure postgrid/postgrid is registered first
+	if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( 'caxton/posts-grid' ) ) {
+		// Get the PostGrid instance
+		$postgrid = new \PostGrid\PostGrid();
 		
-		// Register it also as caxton/posts-grid
+		// Register caxton/posts-grid with same render callback
 		register_block_type( 'caxton/posts-grid', array(
-			'render_callback' => array( $postgrid_block, 'render_callback' ),
-			'attributes' => $postgrid_block->attributes,
-			'supports' => $postgrid_block->supports,
+			'render_callback' => array( $postgrid, 'render_block' ),
+			'attributes' => array(
+				'postsPerPage' => array(
+					'type' => 'number',
+					'default' => 6
+				),
+				'orderBy' => array(
+					'type' => 'string',
+					'default' => 'date'
+				),
+				'order' => array(
+					'type' => 'string',
+					'default' => 'desc'
+				),
+				'selectedCategory' => array(
+					'type' => 'number',
+					'default' => 0
+				),
+				'columns' => array(
+					'type' => 'number',
+					'default' => 3
+				),
+				'showDate' => array(
+					'type' => 'boolean',
+					'default' => true
+				),
+				'showExcerpt' => array(
+					'type' => 'boolean',
+					'default' => true
+				)
+			),
+			'supports' => array(
+				'html' => false,
+				'align' => array( 'wide', 'full' ),
+			),
 		) );
+		
+		error_log( 'PostGrid: Registered caxton/posts-grid compatibility block' );
 	}
 	
 	// Support common Caxton block variations via shortcodes
