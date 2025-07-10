@@ -1,58 +1,53 @@
 <?php
 /**
- * Test script for PostGrid autoloader
- * Run this to verify all classes can be loaded
+ * PostGrid Autoloader Test
+ * 
+ * This script tests the autoloader functionality
  */
 
-// Define required constants
-define( 'ABSPATH', true );
-define( 'POSTGRID_PLUGIN_DIR', __DIR__ . '/' );
+// Define ABSPATH for testing
+define( 'ABSPATH', dirname( __FILE__ ) . '/' );
 
-// Include the autoloader from postgrid.php
-require_once __DIR__ . '/postgrid.php';
+// Include the main plugin file
+require_once 'postgrid.php';
 
-// Test classes to load
-$test_classes = [
-	'PostGrid\\Plugin',
-	'PostGrid\\Core\\AssetManager',
-	'PostGrid\\Core\\HooksManager',
-	'PostGrid\\Core\\CacheManager',
-	'PostGrid\\Blocks\\BlockRegistry',
-	'PostGrid\\Api\\RestController',
-	'PostGrid\\Compatibility\\LegacySupport',
-];
-
-echo "Testing PostGrid Autoloader\n";
-echo "===========================\n\n";
-
-$success = true;
-
-foreach ( $test_classes as $class ) {
-	echo "Testing class: {$class}... ";
-	
-	if ( class_exists( $class ) ) {
-		echo "✓ SUCCESS\n";
-	} else {
-		echo "✗ FAILED\n";
-		$success = false;
-		
-		// Try to determine the expected file path
-		$relative = str_replace( 'PostGrid\\', '', $class );
-		$parts = explode( '\\', $relative );
-		
-		if ( count( $parts ) === 1 ) {
-			$file = 'includes/class-' . strtolower( str_replace( '_', '-', $parts[0] ) ) . '.php';
-		} else {
-			$class_name = array_pop( $parts );
-			$namespace_path = implode( '/', $parts );
-			$file_name = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_name ) );
-			$file = 'includes/' . $namespace_path . '/class-' . $file_name . '.php';
-		}
-		
-		echo "  Expected file: {$file}\n";
-		echo "  File exists: " . ( file_exists( __DIR__ . '/' . $file ) ? 'Yes' : 'No' ) . "\n";
-	}
+// Test autoloader function
+function test_autoloader() {
+    $test_cases = array(
+        'PostGrid\\Plugin' => 'includes/class-plugin.php',
+        'PostGrid\\Core\\CacheManager' => 'includes/Core/class-cache-manager.php',
+        'PostGrid\\Core\\AssetManager' => 'includes/Core/class-asset-manager.php',
+        'PostGrid\\Core\\HooksManager' => 'includes/Core/class-hooks-manager.php',
+        'PostGrid\\Blocks\\BlockRegistry' => 'includes/Blocks/class-block-registry.php',
+        'PostGrid\\Api\\RestController' => 'includes/Api/class-rest-controller.php',
+        'PostGrid\\Compatibility\\LegacySupport' => 'includes/Compatibility/class-legacy-support.php',
+    );
+    
+    echo "Testing PostGrid Autoloader\n";
+    echo "===========================\n\n";
+    
+    foreach ( $test_cases as $class => $expected_file ) {
+        echo "Testing class: $class\n";
+        echo "Expected file: $expected_file\n";
+        
+        // Check if file exists
+        $full_path = POSTGRID_PLUGIN_DIR . $expected_file;
+        if ( file_exists( $full_path ) ) {
+            echo "✓ File exists\n";
+        } else {
+            echo "✗ File NOT found at: $full_path\n";
+        }
+        
+        // Test if class can be loaded
+        if ( class_exists( $class ) ) {
+            echo "✓ Class can be loaded\n";
+        } else {
+            echo "✗ Class CANNOT be loaded\n";
+        }
+        
+        echo "\n";
+    }
 }
 
-echo "\n";
-echo $success ? "All tests passed! ✓\n" : "Some tests failed! ✗\n";
+// Run the test
+test_autoloader();

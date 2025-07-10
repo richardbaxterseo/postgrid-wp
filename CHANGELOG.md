@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.10] - 2025-07-10
+
+### Fixed
+- Fixed missing `use` statement for CacheManager class that caused fatal error
+- Added type safety check for post type support to prevent foreach() warning
+- Improved error handling for class autoloading
+
+### Changed
+- Enhanced register_post_type_support() method with array validation
+
 ## [0.1.9] - 2025-07-10
 
 ### Fixed

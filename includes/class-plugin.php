@@ -9,6 +9,7 @@
 namespace PostGrid;
 
 use PostGrid\Core\AssetManager;
+use PostGrid\Core\CacheManager;
 use PostGrid\Core\HooksManager;
 use PostGrid\Blocks\BlockRegistry;
 use PostGrid\Api\RestController;
@@ -271,6 +272,11 @@ class Plugin {
 	 */
 	private function register_post_type_support() {
 		$supported_types = get_option( 'postgrid_supported_post_types', array( 'post' ) );
+		
+		// Ensure we have an array
+		if ( ! is_array( $supported_types ) ) {
+			$supported_types = array( 'post' );
+		}
 		
 		foreach ( $supported_types as $post_type ) {
 			add_post_type_support( $post_type, 'postgrid' );
