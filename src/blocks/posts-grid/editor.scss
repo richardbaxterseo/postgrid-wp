@@ -1,0 +1,29 @@
+// Editor-specific styles for Posts Grid block
+
+.wp-block-simple-posts-grid-posts-grid {
+	.components-placeholder {
+		min-height: 200px;
+	}
+	
+	.spg-category-select {
+		margin-bottom: 16px;
+		
+		label {
+			display: block;
+			margin-bottom: 8px;
+			font-weight: 600;
+		}
+		
+		.components-checkbox-control {
+			margin-bottom: 8px;
+		}
+	}
+}
+
+// Preview styles in editor
+.editor-styles-wrapper {
+	.spg-posts-grid {
+		opacity: 0.7; // Indicate it's a preview
+		pointer-events: none; // Prevent interaction in editor
+	}
+}
