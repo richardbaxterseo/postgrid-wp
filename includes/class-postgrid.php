@@ -219,7 +219,7 @@ class PostGrid {
 		$show_date = $attributes['showDate'] ?? true;
 		$show_excerpt = $attributes['showExcerpt'] ?? true;
 		
-		$output = '<div class="wp-block-postgrid-postgrid columns-' . esc_attr( $columns ) . '">';
+		$output = '<div class="wp-block-postgrid columns-' . esc_attr( $columns ) . '">';
 		
 		foreach ( $posts as $post ) {
 			$output .= '<article class="wp-block-postgrid__item">';
