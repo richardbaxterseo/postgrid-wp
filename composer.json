@@ -1,0 +1,14 @@
+{
+    "name": "your-vendor/posts-grid-block",
+    "description": "A lightweight posts grid block for WordPress",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "PostsGridBlock\\": "includes/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}

@@ -1,20 +1,17 @@
 {
-	"name": "caxton",
-	"version": "1.27.0",
-	"description": "",
-	"author": "Shramee",
+	"name": "posts-grid-block",
+	"version": "1.0.0",
+	"description": "A lightweight posts grid block for WordPress",
+	"author": "Your Name",
+	"license": "GPL-2.0-or-later",
 	"scripts": {
-		"build": "node build.node.js"
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"format": "wp-scripts format",
+		"lint:js": "wp-scripts lint-js",
+		"lint:css": "wp-scripts lint-style"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.7.2",
-		"@babel/preset-env": "^7.7.1",
-		"babelify": "^10.0.0",
-		"browserify": "^16.5.0",
-		"uglify-js": "^3.6.8",
-		"uglifyify": "^5.0.2"
-	},
-	"dependencies": {
-		"react-sortable-list": "^1.1.1"
+		"@wordpress/scripts": "^26.18.0"
 	}
 }
