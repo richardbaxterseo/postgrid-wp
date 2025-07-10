@@ -197,11 +197,11 @@
 
 .wp-block-postgrid__categories a {
 	background: var(--postgrid-accent);
-	color: var(--postgrid-text-primary);
+	color: #ffffff;
 	padding: 0.25rem 0.75rem;
 	border-radius: 20px;
-	font-size: 0.75rem;
-	font-weight: 600;
+	font-size: 0.8125rem; /* Increased from 0.75rem (12px to 13px) */
+	font-weight: 700; /* Bold instead of 600 */
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	text-decoration: none;
@@ -240,7 +240,7 @@
 	}
 	
 	.wp-block-postgrid__title a:hover {
-		color: var(--postgrid-accent);
+		color: #FB643C;
 	}
 	
 	.wp-block-postgrid__meta a:hover {
