@@ -55,7 +55,7 @@ jobs:
         fi
     
     - name: Create ZIP file
-      run: zip -r postgrid-v${{ steps.get_version.outputs.VERSION }}.zip postgrid/
+      run: zip -r postgrid.zip postgrid/
     
     - name: Create Release
       id: create_release
@@ -70,7 +70,7 @@ jobs:
           
           ### Installation
           
-          1. Download `postgrid-v${{ steps.get_version.outputs.VERSION }}.zip`
+          1. Download `postgrid.zip`
           2. Go to WordPress Admin → Plugins → Add New → Upload Plugin
           3. Select the downloaded ZIP file
           4. Activate the plugin
@@ -91,6 +91,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./postgrid-v${{ steps.get_version.outputs.VERSION }}.zip
-        asset_name: postgrid-v${{ steps.get_version.outputs.VERSION }}.zip
+        asset_path: ./postgrid.zip
+        asset_name: postgrid.zip
         asset_content_type: application/zip
