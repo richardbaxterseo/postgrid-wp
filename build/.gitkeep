@@ -1,0 +1,6 @@
+# Build Directory
+
+This directory contains compiled assets. Do not edit files here directly.
+
+Run `npm run build` to generate production assets.
+Run `npm run dev` to start development mode with watch.

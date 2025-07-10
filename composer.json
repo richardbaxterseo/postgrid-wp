@@ -1,12 +1,12 @@
 {
-    "name": "yourname/postgrid",
+    "name": "postgrid/postgrid",
     "description": "A lightweight posts grid block for WordPress",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Your Name",
-            "email": "your@email.com"
+            "email": "your-email@example.com"
         }
     ],
     "minimum-stability": "stable",

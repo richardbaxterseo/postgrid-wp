@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PostGrid Coding Standards" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+	<description>PostGrid plugin coding standards based on WordPress Coding Standards</description>
+
+	<!-- Scan only PHP files -->
+	<arg name="extensions" value="php"/>
+
+	<!-- Show progress and sniff codes -->
+	<arg value="ps"/>
+
+	<!-- Check up to 8 files simultaneously -->
+	<arg name="parallel" value="8"/>
+
+	<!-- Set minimum supported WordPress version -->
+	<config name="minimum_supported_wp_version" value="6.0"/>
+
+	<!-- Set minimum supported PHP version -->
+	<config name="testVersion" value="7.4-"/>
+
+	<!-- Files to check -->
+	<file>.</file>
+
+	<!-- Exclude paths -->
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/dist/*</exclude-pattern>
+	<exclude-pattern>*.min.js</exclude-pattern>
+	<exclude-pattern>*.min.css</exclude-pattern>
+
+	<!-- Include the WordPress ruleset -->
+	<rule ref="WordPress">
+		<!-- Allow short array syntax -->
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+		
+		<!-- We use PSR-4 autoloading, so file names don't follow WP convention -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+	</rule>
+
+	<!-- Include WordPress-Extra ruleset -->
+	<rule ref="WordPress-Extra">
+		<!-- Allow multiple statements per line in switch cases -->
+		<exclude name="Generic.Formatting.DisallowMultipleStatements.SameLine"/>
+	</rule>
+
+	<!-- Include WordPress-Docs ruleset -->
+	<rule ref="WordPress-Docs"/>
+
+	<!-- Check for PHP cross-version compatibility -->
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Enforce PSR-4 autoloading standard -->
+	<rule ref="PSR4">
+		<properties>
+			<property name="basePath" value="."/>
+		</properties>
+	</rule>
+
+	<!-- Security rules -->
+	<rule ref="WordPress.Security.EscapeOutput"/>
+	<rule ref="WordPress.Security.NonceVerification"/>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+
+	<!-- Enforce proper text domain -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="postgrid"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Allow some flexibility for modern PHP -->
+	<rule ref="WordPress.PHP.DisallowShortTernary.Found">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Custom line length for better readability -->
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="120"/>
+			<property name="absoluteLineLimit" value="150"/>
+		</properties>
+	</rule>
+</ruleset>
