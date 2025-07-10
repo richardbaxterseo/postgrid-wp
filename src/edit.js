@@ -51,7 +51,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		} );
 		
 		apiFetch( {
-			path: `/posts-grid/v1/posts?${params}`,
+			path: `/postgrid/v1/posts?${params}`,
 		} )
 			.then( ( fetchedPosts ) => {
 				setPosts( fetchedPosts );
@@ -69,7 +69,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	
 	// Build category options
 	const categoryOptions = [
-		{ label: __( 'All Categories', 'posts-grid-block' ), value: 0 }
+		{ label: __( 'All Categories', 'postgrid' ), value: 0 }
 	];
 	
 	if ( categories.length > 0 ) {
@@ -84,9 +84,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Posts Settings', 'posts-grid-block' ) }>
+				<PanelBody title={ __( 'Posts Settings', 'postgrid' ) }>
 					<RangeControl
-						label={ __( 'Number of posts', 'posts-grid-block' ) }
+						label={ __( 'Number of posts', 'postgrid' ) }
 						value={ postsPerPage }
 						onChange={ ( value ) => setAttributes( { postsPerPage: value } ) }
 						min={ 1 }
@@ -94,37 +94,37 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 					
 					<SelectControl
-						label={ __( 'Order by', 'posts-grid-block' ) }
+						label={ __( 'Order by', 'postgrid' ) }
 						value={ orderBy }
 						options={ [
-							{ label: __( 'Date', 'posts-grid-block' ), value: 'date' },
-							{ label: __( 'Title', 'posts-grid-block' ), value: 'title' },
-							{ label: __( 'Menu order', 'posts-grid-block' ), value: 'menu_order' },
+							{ label: __( 'Date', 'postgrid' ), value: 'date' },
+							{ label: __( 'Title', 'postgrid' ), value: 'title' },
+							{ label: __( 'Menu order', 'postgrid' ), value: 'menu_order' },
 						] }
 						onChange={ ( value ) => setAttributes( { orderBy: value } ) }
 					/>
 					
 					<SelectControl
-						label={ __( 'Order', 'posts-grid-block' ) }
+						label={ __( 'Order', 'postgrid' ) }
 						value={ order }
 						options={ [
-							{ label: __( 'Descending', 'posts-grid-block' ), value: 'desc' },
-							{ label: __( 'Ascending', 'posts-grid-block' ), value: 'asc' },
+							{ label: __( 'Descending', 'postgrid' ), value: 'desc' },
+							{ label: __( 'Ascending', 'postgrid' ), value: 'asc' },
 						] }
 						onChange={ ( value ) => setAttributes( { order: value } ) }
 					/>
 					
 					<SelectControl
-						label={ __( 'Category', 'posts-grid-block' ) }
+						label={ __( 'Category', 'postgrid' ) }
 						value={ selectedCategory }
 						options={ categoryOptions }
 						onChange={ ( value ) => setAttributes( { selectedCategory: parseInt( value ) } ) }
 					/>
 				</PanelBody>
 				
-				<PanelBody title={ __( 'Layout Settings', 'posts-grid-block' ) }>
+				<PanelBody title={ __( 'Layout Settings', 'postgrid' ) }>
 					<RangeControl
-						label={ __( 'Columns', 'posts-grid-block' ) }
+						label={ __( 'Columns', 'postgrid' ) }
 						value={ columns }
 						onChange={ ( value ) => setAttributes( { columns: value } ) }
 						min={ 1 }
@@ -132,13 +132,13 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 					
 					<ToggleControl
-						label={ __( 'Show date', 'posts-grid-block' ) }
+						label={ __( 'Show date', 'postgrid' ) }
 						checked={ showDate }
 						onChange={ ( value ) => setAttributes( { showDate: value } ) }
 					/>
 					
 					<ToggleControl
-						label={ __( 'Show excerpt', 'posts-grid-block' ) }
+						label={ __( 'Show excerpt', 'postgrid' ) }
 						checked={ showExcerpt }
 						onChange={ ( value ) => setAttributes( { showExcerpt: value } ) }
 					/>
@@ -147,34 +147,34 @@ export default function Edit( { attributes, setAttributes } ) {
 			
 			<div { ...blockProps }>
 				{ isLoading && (
-					<Placeholder icon="grid-view" label={ __( 'Posts Grid', 'posts-grid-block' ) }>
+					<Placeholder icon="grid-view" label={ __( 'PostGrid', 'postgrid' ) }>
 						<Spinner />
 					</Placeholder>
 				) }
 				
 				{ ! isLoading && posts.length === 0 && (
-					<Placeholder icon="grid-view" label={ __( 'Posts Grid', 'posts-grid-block' ) }>
-						{ __( 'No posts found.', 'posts-grid-block' ) }
+					<Placeholder icon="grid-view" label={ __( 'PostGrid', 'postgrid' ) }>
+						{ __( 'No posts found.', 'postgrid' ) }
 					</Placeholder>
 				) }
 				
 				{ ! isLoading && posts.length > 0 && (
-					<div className="wp-block-posts-grid">
+					<div className="wp-block-postgrid">
 						{ posts.map( ( post ) => (
-							<article key={ post.id } className="wp-block-posts-grid__item">
-								<h3 className="wp-block-posts-grid__title">
+							<article key={ post.id } className="wp-block-postgrid__item">
+								<h3 className="wp-block-postgrid__title">
 									<a href={ post.link }>{ post.title }</a>
 								</h3>
 								
 								{ showDate && (
-									<time className="wp-block-posts-grid__date">
+									<time className="wp-block-postgrid__date">
 										{ post.date }
 									</time>
 								) }
 								
 								{ showExcerpt && (
 									<div 
-										className="wp-block-posts-grid__excerpt"
+										className="wp-block-postgrid__excerpt"
 										dangerouslySetInnerHTML={ { __html: post.excerpt } }
 									/>
 								) }

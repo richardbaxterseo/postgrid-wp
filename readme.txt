@@ -1,4 +1,4 @@
-=== Posts Grid Block ===
+=== PostGrid ===
 Contributors: yourname
 Tags: blocks, posts, grid, gutenberg
 Requires at least: 6.0
@@ -12,7 +12,7 @@ A lightweight posts grid block for the WordPress block editor.
 
 == Description ==
 
-Posts Grid Block provides a simple, performant way to display your posts in a responsive grid layout. Built with modern WordPress standards and no external dependencies.
+PostGrid provides a simple, performant way to display your posts in a responsive grid layout. Built with modern WordPress standards and no external dependencies.
 
 Features:
 * Clean, minimal design
@@ -26,9 +26,9 @@ Features:
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/posts-grid-block` directory
+1. Upload the plugin files to the `/wp-content/plugins/postgrid` directory
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Add the Posts Grid block to any post or page
+3. Add the PostGrid block to any post or page
 
 == Frequently Asked Questions ==
 
@@ -42,7 +42,7 @@ Currently, the block only displays standard posts. Custom post type support may 
 
 == Screenshots ==
 
-1. Posts grid in the editor
+1. PostGrid in the editor
 2. Block settings panel
 3. Frontend display
 
@@ -50,13 +50,13 @@ Currently, the block only displays standard posts. Custom post type support may 
 
 = 1.0.0 =
 * Initial release
-* Refactored from Caxton plugin
-* Removed all external dependencies
-* Implemented modern block.json structure
-* Added REST API endpoint
+* Ultra-lean architecture
+* Modern block.json structure
+* REST API endpoint
 * Minimal custom CSS (under 100 lines)
+* No external dependencies
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release. This is a complete rewrite focusing on simplicity and performance.
+Initial release. A focused, lightweight posts grid block for WordPress.

@@ -1,5 +1,5 @@
 <?php
-namespace PostsGridBlock;
+namespace PostGrid;
 
 // Prevent direct access
 if ( ! defined( 'ABSPATH' ) ) {
@@ -7,16 +7,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Main Posts Grid Block class
+ * Main PostGrid class
  */
-class PostsGrid {
+class PostGrid {
 	
 	/**
 	 * Initialize the plugin
 	 */
 	public function init() {
 		// Register block
-		register_block_type( PGB_PLUGIN_DIR . 'block.json', array(
+		register_block_type( POSTGRID_PLUGIN_DIR . 'block.json', array(
 			'render_callback' => array( $this, 'render_block' ),
 		) );
 		
@@ -28,7 +28,7 @@ class PostsGrid {
 	 * Register REST API routes
 	 */
 	public function register_rest_routes() {
-		register_rest_route( 'posts-grid/v1', '/posts', array(
+		register_rest_route( 'postgrid/v1', '/posts', array(
 			'methods'             => 'GET',
 			'callback'            => array( $this, 'get_posts_endpoint' ),
 			'permission_callback' => '__return_true',
@@ -102,30 +102,30 @@ class PostsGrid {
 		$posts = get_posts( $args );
 		
 		if ( empty( $posts ) ) {
-			return '<p>' . esc_html__( 'No posts found.', 'posts-grid-block' ) . '</p>';
+			return '<p>' . esc_html__( 'No posts found.', 'postgrid' ) . '</p>';
 		}
 		
 		$columns = $attributes['columns'] ?? 3;
 		$show_date = $attributes['showDate'] ?? true;
 		$show_excerpt = $attributes['showExcerpt'] ?? true;
 		
-		$output = '<div class="wp-block-posts-grid columns-' . esc_attr( $columns ) . '">';
+		$output = '<div class="wp-block-postgrid columns-' . esc_attr( $columns ) . '">';
 		
 		foreach ( $posts as $post ) {
-			$output .= '<article class="wp-block-posts-grid__item">';
-			$output .= '<h3 class="wp-block-posts-grid__title">';
+			$output .= '<article class="wp-block-postgrid__item">';
+			$output .= '<h3 class="wp-block-postgrid__title">';
 			$output .= '<a href="' . esc_url( get_permalink( $post ) ) . '">';
 			$output .= esc_html( get_the_title( $post ) );
 			$output .= '</a></h3>';
 			
 			if ( $show_date ) {
-				$output .= '<time class="wp-block-posts-grid__date">';
+				$output .= '<time class="wp-block-postgrid__date">';
 				$output .= esc_html( get_the_date( '', $post ) );
 				$output .= '</time>';
 			}
 			
 			if ( $show_excerpt ) {
-				$output .= '<div class="wp-block-posts-grid__excerpt">';
+				$output .= '<div class="wp-block-postgrid__excerpt">';
 				$output .= wp_kses_post( get_the_excerpt( $post ) );
 				$output .= '</div>';
 			}

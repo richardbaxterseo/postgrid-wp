@@ -1,13 +1,13 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "posts-grid-block/posts-grid",
+	"name": "postgrid/postgrid",
 	"version": "1.0.0",
-	"title": "Posts Grid",
+	"title": "PostGrid",
 	"category": "widgets",
 	"icon": "grid-view",
 	"description": "Display posts in a responsive grid layout",
-	"textdomain": "posts-grid-block",
+	"textdomain": "postgrid",
 	"attributes": {
 		"postsPerPage": {
 			"type": "number",
