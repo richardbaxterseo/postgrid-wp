@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.11] - 2025-07-10
+
+### Added
+- Mobile-first CSS architecture with progressive enhancement
+- Loading skeleton states with shimmer animation
+- Staggered animations for grid items
+- Enhanced focus indicators for better accessibility
+- CSS custom properties for mobile-specific styling
+- Reduced motion support for accessibility
+- Touch-friendly 44px minimum tap targets
+
+### Changed
+- Complete CSS rewrite using mobile-first approach
+- Improved responsive breakpoints (768px, 992px, 1200px)
+- Better dark mode contrast and colors
+- Enhanced hover states with `@media (hover: hover)`
+- Optimized grid layout for different viewports
+- More efficient CSS custom properties structure
+
+### Fixed
+- Touch targets now meet WCAG accessibility guidelines
+- Focus indicators are now more visible
+- Animations respect user motion preferences
+- Better spacing on mobile devices
+- Improved text readability on small screens
+
 ## [0.1.10] - 2025-07-10
 
 ### Fixed

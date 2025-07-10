@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostGrid CSS Mobile-First Responsive Test</title>
+    <link rel="stylesheet" href="src/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .demo-section {
+            margin-bottom: 60px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0 0 10px 0;
+            color: #1e1e1e;
+        }
+        
+        h2 {
+            margin: 40px 0 20px 0;
+            text-align: center;
+            color: #333;
+        }
+        
+        .demo-controls {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #0073aa;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #005a87;
+        }
+        
+        button:focus {
+            outline: 3px solid #4dabf7;
+            outline-offset: 2px;
+        }
+        
+        .viewport-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 9999;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121212;
+                color: #e0e0e0;
+            }
+            
+            .demo-header {
+                background: #1e1e1e;
+            }
+            
+            h1, h2 {
+                color: #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="viewport-indicator">
+        <span id="viewport-size">Width: 0px</span>
+    </div>
+    
+    <div class="demo-header">
+        <h1>PostGrid Mobile-First Responsive Design</h1>
+        <p>Test the enhanced responsive CSS with improved mobile experience</p>
+    </div>
+    
+    <div class="demo-controls">
+        <button onclick="toggleAnimation()">Toggle Animation</button>
+        <button onclick="toggleLoading()">Toggle Loading State</button>
+        <button onclick="toggleColumns(1)">1 Column</button>
+        <button onclick="toggleColumns(2)">2 Columns</button>
+        <button onclick="toggleColumns(3)">3 Columns</button>
+        <button onclick="toggleColumns(4)">4 Columns</button>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Default Grid (Auto-responsive)</h2>
+        <div class="wp-block-postgrid wp-block-postgrid--animated" id="main-grid">
+            <!-- Post 1 -->
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail">
+                    <img src="https://placehold.co/600x400/4299e1/ffffff?text=Featured+Image" alt="Post thumbnail">
+                </div>
+                <h3 class="wp-block-postgrid__title">
+                    <a href="#">Getting Started with Mobile-First Design in WordPress</a>
+                </h3>
+                <div class="wp-block-postgrid__meta">
+                    <span class="wp-block-postgrid__author">By <a href="#">Richard Baxter</a></span>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <time class="wp-block-postgrid__date">10 July 2025</time>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <span class="wp-block-postgrid__categories">
+                        <a href="#">Development</a>, <a href="#">CSS</a>
+                    </span>
+                </div>
+                <div class="wp-block-postgrid__excerpt">
+                    <p>Learn how to implement mobile-first responsive design patterns that enhance user experience across all devices while maintaining performance.</p>
+                </div>
+            </article>
+            
+            <!-- Post 2 -->
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail">
+                    <img src="https://placehold.co/600x400/805ad5/ffffff?text=WordPress+Theme" alt="Post thumbnail">
+                </div>
+                <h3 class="wp-block-postgrid__title">
+                    <a href="#">Enhanced Touch Targets for Better Mobile UX</a>
+                </h3>
+                <div class="wp-block-postgrid__meta">
+                    <span class="wp-block-postgrid__author">By <a href="#">Sarah Johnson</a></span>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <time class="wp-block-postgrid__date">9 July 2025</time>
+                </div>
+                <div class="wp-block-postgrid__excerpt">
+                    <p>Discover why 44px minimum touch targets are crucial for mobile interfaces and how to implement them effectively in your WordPress blocks.</p>
+                </div>
+            </article>
+            
+            <!-- Post 3 -->
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail">
+                    <img src="https://placehold.co/600x400/38a169/ffffff?text=Performance" alt="Post thumbnail">
+                </div>
+                <h3 class="wp-block-postgrid__title">
+                    <a href="#">CSS Custom Properties for Dynamic Theming</a>
+                </h3>
+                <div class="wp-block-postgrid__meta">
+                    <span class="wp-block-postgrid__author">By <a href="#">Mike Chen</a></span>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <time class="wp-block-postgrid__date">8 July 2025</time>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <span class="wp-block-postgrid__categories">
+                        <a href="#">Tutorial</a>
+                    </span>
+                </div>
+                <div class="wp-block-postgrid__excerpt">
+                    <p>Using CSS custom properties enables dynamic theming and improves maintainability. See how PostGrid leverages these modern CSS features.</p>
+                </div>
+            </article>
+            
+            <!-- Post 4 -->
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail">
+                    <img src="https://placehold.co/600x400/e53e3e/ffffff?text=Accessibility" alt="Post thumbnail">
+                </div>
+                <h3 class="wp-block-postgrid__title">
+                    <a href="#">Accessibility Best Practices for Grid Layouts with Focus Management</a>
+                </h3>
+                <div class="wp-block-postgrid__meta">
+                    <span class="wp-block-postgrid__author">By <a href="#">Emma Wilson</a></span>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <time class="wp-block-postgrid__date">7 July 2025</time>
+                </div>
+                <div class="wp-block-postgrid__excerpt">
+                    <p>Ensure your grid layouts are accessible to all users with proper focus indicators, keyboard navigation, and screen reader support.</p>
+                </div>
+            </article>
+            
+            <!-- Post 5 -->
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail">
+                    <img src="https://placehold.co/600x400/ed8936/ffffff?text=Loading+States" alt="Post thumbnail">
+                </div>
+                <h3 class="wp-block-postgrid__title">
+                    <a href="#">Implementing Skeleton Loading States</a>
+                </h3>
+                <div class="wp-block-postgrid__meta">
+                    <span class="wp-block-postgrid__author">By <a href="#">Tom Davis</a></span>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <time class="wp-block-postgrid__date">6 July 2025</time>
+                </div>
+                <div class="wp-block-postgrid__excerpt">
+                    <p>Improve perceived performance with skeleton loading states that provide visual feedback while content loads in the background.</p>
+                </div>
+            </article>
+            
+            <!-- Post 6 -->
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail">
+                    <img src="https://placehold.co/600x400/48bb78/ffffff?text=Animations" alt="Post thumbnail">
+                </div>
+                <h3 class="wp-block-postgrid__title">
+                    <a href="#">Staggered Animations for Better User Experience</a>
+                </h3>
+                <div class="wp-block-postgrid__meta">
+                    <span class="wp-block-postgrid__author">By <a href="#">Lisa Park</a></span>
+                    <span class="wp-block-postgrid__meta-separator">•</span>
+                    <time class="wp-block-postgrid__date">5 July 2025</time>
+                </div>
+                <div class="wp-block-postgrid__excerpt">
+                    <p>Add polish to your interfaces with carefully timed staggered animations that guide user attention and improve perceived performance.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Loading State Example</h2>
+        <div class="wp-block-postgrid wp-block-postgrid--loading columns-3">
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail"></div>
+                <h3 class="wp-block-postgrid__title">Loading...</h3>
+                <div class="wp-block-postgrid__meta">Loading meta...</div>
+                <div class="wp-block-postgrid__excerpt">Loading excerpt...</div>
+            </article>
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail"></div>
+                <h3 class="wp-block-postgrid__title">Loading...</h3>
+                <div class="wp-block-postgrid__meta">Loading meta...</div>
+                <div class="wp-block-postgrid__excerpt">Loading excerpt...</div>
+            </article>
+            <article class="wp-block-postgrid__item">
+                <div class="wp-block-postgrid__thumbnail"></div>
+                <h3 class="wp-block-postgrid__title">Loading...</h3>
+                <div class="wp-block-postgrid__meta">Loading meta...</div>
+                <div class="wp-block-postgrid__excerpt">Loading excerpt...</div>
+            </article>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>No Posts State</h2>
+        <div class="wp-block-postgrid">
+            <div class="wp-block-postgrid__no-posts">
+                No posts found. Try adjusting your search criteria or check back later.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Update viewport indicator
+        function updateViewport() {
+            const width = window.innerWidth;
+            const indicator = document.getElementById('viewport-size');
+            let device = 'Mobile';
+            
+            if (width >= 1200) device = 'Large Desktop';
+            else if (width >= 992) device = 'Desktop';
+            else if (width >= 768) device = 'Tablet';
+            
+            indicator.textContent = `${device}: ${width}px`;
+        }
+        
+        window.addEventListener('resize', updateViewport);
+        updateViewport();
+        
+        // Toggle animation
+        function toggleAnimation() {
+            const grid = document.getElementById('main-grid');
+            grid.classList.toggle('wp-block-postgrid--animated');
+            
+            // Re-trigger animation
+            if (grid.classList.contains('wp-block-postgrid--animated')) {
+                const items = grid.querySelectorAll('.wp-block-postgrid__item');
+                items.forEach(item => {
+                    item.style.animation = 'none';
+                    setTimeout(() => {
+                        item.style.animation = '';
+                    }, 10);
+                });
+            }
+        }
+        
+        // Toggle loading state
+        function toggleLoading() {
+            const grid = document.getElementById('main-grid');
+            grid.classList.toggle('wp-block-postgrid--loading');
+        }
+        
+        // Toggle columns
+        function toggleColumns(num) {
+            const grid = document.getElementById('main-grid');
+            grid.className = grid.className.replace(/columns-\d/g, '');
+            if (num > 1) {
+                grid.classList.add(`columns-${num}`);
+            }
+        }
+        
+        // Test keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                console.log('Tab navigation active - check focus indicators');
+            }
+        });
+    </script>
+</body>
+</html>
