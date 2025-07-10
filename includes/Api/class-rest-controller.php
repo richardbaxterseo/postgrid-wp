@@ -39,17 +39,17 @@ class RestController {
 	private $cache;
 	
 	/**
-	 * Rate limit tracking
-	 *
-	 * @var array
-	 */
-	private static $rate_limits = array();
-	
-	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->cache = new CacheManager();
+		// Get cache manager from plugin instance
+		$plugin = \PostGrid\Plugin::get_instance();
+		$this->cache = $plugin->get_cache_manager();
+		
+		// Fallback to new instance if not available
+		if ( ! $this->cache ) {
+			$this->cache = new CacheManager();
+		}
 	}
 	
 	/**
@@ -314,7 +314,9 @@ class RestController {
 		}
 		
 		$ip = $this->get_client_ip();
-		$limit = apply_filters( 'postgrid_api_rate_limit', 60 ); // 60 requests per minute
+		// Get the rate limit from settings, with default of 60
+		$default_limit = get_option( 'postgrid_rate_limit', 60 );
+		$limit = apply_filters( 'postgrid_api_rate_limit', $default_limit );
 		$window = MINUTE_IN_SECONDS;
 		
 		$key = 'postgrid_rate_' . $ip;

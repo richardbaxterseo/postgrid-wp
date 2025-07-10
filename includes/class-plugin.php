@@ -67,6 +67,13 @@ class Plugin {
 	private $legacy;
 	
 	/**
+	 * Cache manager instance
+	 *
+	 * @var CacheManager
+	 */
+	private $cache;
+	
+	/**
 	 * Plugin initialization state
 	 *
 	 * @var bool
@@ -84,6 +91,15 @@ class Plugin {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Get cache manager instance
+	 *
+	 * @return CacheManager|null
+	 */
+	public function get_cache_manager() {
+		return $this->cache;
 	}
 	
 	/**
@@ -164,11 +180,15 @@ class Plugin {
 	private function init_components() {
 		try {
 			// Initialize core components
+			$this->cache = new CacheManager();
 			$this->assets = new AssetManager();
 			$this->hooks = new HooksManager();
 			$this->blocks = new BlockRegistry();
 			$this->api = new RestController();
 			$this->legacy = new LegacySupport();
+			
+			// Initialize cache hooks
+			$this->cache->init_hooks();
 			
 		} catch ( \Exception $e ) {
 			// Log the error
@@ -178,6 +198,7 @@ class Plugin {
 			add_action( 'admin_notices', array( $this, 'show_initialization_error' ), 10, 1 );
 			
 			// Set components to null to indicate failure
+			$this->cache = null;
 			$this->assets = null;
 			$this->hooks = null;
 			$this->blocks = null;
@@ -193,6 +214,7 @@ class Plugin {
 	 */
 	private function components_loaded() {
 		return ( 
+			$this->cache instanceof CacheManager &&
 			$this->assets instanceof AssetManager &&
 			$this->hooks instanceof HooksManager &&
 			$this->blocks instanceof BlockRegistry &&
