@@ -1,0 +1,72 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create plugin directory
+      run: mkdir -p postgrid-wp
+    
+    - name: Copy plugin files
+      run: |
+        rsync -av --exclude-from='.gitignore' \
+          --exclude='.git' \
+          --exclude='.github' \
+          --exclude='*.md' \
+          --exclude='composer.lock' \
+          --exclude='node_modules' \
+          --exclude='tests' \
+          --exclude='phpunit.xml' \
+          --exclude='.gitignore' \
+          --exclude='package-lock.json' \
+          --exclude='RELEASE_NOTES_*' \
+          ./ postgrid-wp/
+    
+    - name: Create ZIP file
+      run: zip -r postgrid-wp-${{ github.ref_name }}.zip postgrid-wp/
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: PostGrid ${{ github.ref_name }}
+        body: |
+          ## PostGrid ${{ github.ref_name }}
+          
+          See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+          
+          ### Installation
+          
+          1. Download `postgrid-wp-${{ github.ref_name }}.zip`
+          2. Go to WordPress Admin → Plugins → Add New → Upload Plugin
+          3. Select the downloaded ZIP file
+          4. Activate the plugin
+          
+          ### Migration from Caxton
+          
+          PostGrid includes full backwards compatibility with Caxton. See the [Migration Guide](https://github.com/${{ github.repository }}/blob/main/CAXTON_MIGRATION_GUIDE.md) for details.
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./postgrid-wp-${{ github.ref_name }}.zip
+        asset_name: postgrid-wp-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
