@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/yourusername/postgrid
  * Description: A lightweight posts grid block for WordPress
  * Author: Your Name
- * Version: 0.1.3
+ * Version: 0.1.4
  * Author URI: https://yourwebsite.com/
  * Text Domain: postgrid
  * Domain Path: /languages
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'POSTGRID_VERSION', '0.1.3' );
+define( 'POSTGRID_VERSION', '0.1.4' );
 define( 'POSTGRID_PLUGIN_FILE', __FILE__ );
 define( 'POSTGRID_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'POSTGRID_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -90,9 +90,9 @@ function postgrid_activation() {
  */
 function postgrid_register_legacy_support() {
 	// Register the caxton/posts-grid block as an alias
-	if ( WP_Block_Type_Registry::get_instance()->is_registered( 'postgrid/postgrid' ) ) {
+	if ( \WP_Block_Type_Registry::get_instance()->is_registered( 'postgrid/postgrid' ) ) {
 		// Get the registered PostGrid block
-		$postgrid_block = WP_Block_Type_Registry::get_instance()->get_registered( 'postgrid/postgrid' );
+		$postgrid_block = \WP_Block_Type_Registry::get_instance()->get_registered( 'postgrid/postgrid' );
 		
 		// Register it also as caxton/posts-grid
 		register_block_type( 'caxton/posts-grid', array(

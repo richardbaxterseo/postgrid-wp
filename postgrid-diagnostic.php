@@ -44,7 +44,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
     
     <h2>Registered Blocks</h2>
     <?php
-    $registry = WP_Block_Type_Registry::get_instance();
+    $registry = \WP_Block_Type_Registry::get_instance();
     $all_blocks = $registry->get_all_registered();
     $postgrid_blocks = array();
     $caxton_blocks = array();

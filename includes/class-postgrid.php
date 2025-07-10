@@ -47,7 +47,7 @@ class PostGrid {
 	 */
 	public function register_caxton_compatibility() {
 		// Check if caxton/posts-grid is being used
-		if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'caxton/posts-grid' ) ) {
+		if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( 'caxton/posts-grid' ) ) {
 			// Register caxton/posts-grid as an alias to postgrid/postgrid
 			register_block_type( 'caxton/posts-grid', array(
 				'render_callback' => array( $this, 'render_caxton_block' ),

@@ -2,6 +2,13 @@
 
 All notable changes to PostGrid will be documented in this file.
 
+## [0.1.4] - 2025-01-10
+
+### Fixed
+- Fixed PHP Fatal error: Class "PostGrid\WP_Block_Type_Registry" not found
+- Added proper namespace prefix (\) for global WordPress classes
+- Corrected namespace issues in both main plugin file and PostGrid class
+
 ## [0.1.3] - 2025-01-10
 
 ### Fixed
