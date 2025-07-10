@@ -105,10 +105,10 @@ class BlockRenderer {
 			'showExcerpt' => true,
 			'postType' => 'post',
 			'excerptLength' => 20,
-			'showThumbnail' => false,
-			'thumbnailSize' => 'medium',
+			'showThumbnail' => true,      // Changed to true by default
+			'thumbnailSize' => 'medium_large',  // Better size for modern design
 			'showAuthor' => false,
-			'showCategories' => false,
+			'showCategories' => true,     // Show categories for visual interest
 		);
 		
 		// Handle boolean values explicitly
@@ -211,36 +211,61 @@ class BlockRenderer {
 		}
 		
 		$item_classes = array( 'wp-block-postgrid__item' );
+		
+		// Add class if post has thumbnail
+		if ( has_post_thumbnail( $post ) ) {
+			$item_classes[] = 'has-post-thumbnail';
+		}
+		
 		$item_classes = apply_filters( 'postgrid_item_classes', $item_classes, $post );
 		
 		do_action( 'postgrid_before_item', $post, $attributes );
 		?>
 		<article class="<?php echo esc_attr( implode( ' ', $item_classes ) ); ?>">
-			<?php if ( $attributes['showThumbnail'] && has_post_thumbnail( $post ) ) : ?>
+			<?php if ( has_post_thumbnail( $post ) ) : ?>
 				<div class="wp-block-postgrid__thumbnail">
-					<a href="<?php echo esc_url( get_permalink( $post ) ); ?>">
-						<?php echo get_the_post_thumbnail( $post, $attributes['thumbnailSize'] ); ?>
+					<a href="<?php echo esc_url( get_permalink( $post ) ); ?>" rel="bookmark">
+						<?php echo get_the_post_thumbnail( $post, 'medium_large', array(
+							'class' => 'wp-block-postgrid__image',
+							'loading' => 'lazy'
+						) ); ?>
 					</a>
 				</div>
 			<?php endif; ?>
 			
-			<h3 class="wp-block-postgrid__title">
-				<a href="<?php echo esc_url( get_permalink( $post ) ); ?>">
-					<?php echo esc_html( apply_filters( 'postgrid_item_title', get_the_title( $post ), $post ) ); ?>
-				</a>
-			</h3>
-			
-			<?php if ( $attributes['showAuthor'] || $attributes['showDate'] || $attributes['showCategories'] ) : ?>
-				<div class="wp-block-postgrid__meta">
-					<?php $this->render_meta( $post, $attributes ); ?>
-				</div>
+			<?php if ( $attributes['showCategories'] ) : ?>
+				<?php
+				$categories = get_the_category( $post->ID );
+				if ( ! empty( $categories ) ) : ?>
+					<div class="wp-block-postgrid__categories">
+						<?php foreach ( array_slice( $categories, 0, 1 ) as $category ) : ?>
+							<a href="<?php echo esc_url( get_category_link( $category ) ); ?>">
+								<?php echo esc_html( $category->name ); ?>
+							</a>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			<?php endif; ?>
 			
-			<?php if ( $attributes['showExcerpt'] ) : ?>
-				<div class="wp-block-postgrid__excerpt">
-					<?php echo wp_kses_post( $this->get_excerpt( $post, $attributes ) ); ?>
-				</div>
-			<?php endif; ?>
+			<div class="wp-block-postgrid__content">
+				<h3 class="wp-block-postgrid__title">
+					<a href="<?php echo esc_url( get_permalink( $post ) ); ?>">
+						<?php echo esc_html( apply_filters( 'postgrid_item_title', get_the_title( $post ), $post ) ); ?>
+					</a>
+				</h3>
+				
+				<?php if ( $attributes['showAuthor'] || $attributes['showDate'] ) : ?>
+					<div class="wp-block-postgrid__meta">
+						<?php $this->render_meta( $post, $attributes ); ?>
+					</div>
+				<?php endif; ?>
+				
+				<?php if ( $attributes['showExcerpt'] ) : ?>
+					<div class="wp-block-postgrid__excerpt">
+						<?php echo wp_kses_post( $this->get_excerpt( $post, $attributes ) ); ?>
+					</div>
+				<?php endif; ?>
+			</div>
 		</article>
 		<?php
 		do_action( 'postgrid_after_item', $post, $attributes );
@@ -273,24 +298,6 @@ class BlockRenderer {
 				esc_attr( get_the_date( 'c', $post ) ),
 				esc_html( get_the_date( $date_format, $post ) )
 			);
-		}
-		
-		if ( $attributes['showCategories'] ) {
-			$categories = get_the_category( $post->ID );
-			if ( ! empty( $categories ) ) {
-				$cat_links = array();
-				foreach ( $categories as $category ) {
-					$cat_links[] = sprintf(
-						'<a href="%s">%s</a>',
-						esc_url( get_category_link( $category ) ),
-						esc_html( $category->name )
-					);
-				}
-				$meta_items[] = sprintf(
-					'<span class="wp-block-postgrid__categories">%s</span>',
-					implode( ', ', $cat_links )
-				);
-			}
 		}
 		
 		echo implode( ' <span class="wp-block-postgrid__meta-separator">|</span> ', $meta_items );

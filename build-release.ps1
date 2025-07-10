@@ -2,7 +2,7 @@
 # Creates a production-ready ZIP file with all necessary files
 
 $pluginSlug = "postgrid"
-$version = "0.1.8"
+$version = "0.1.11"
 $sourceDir = "C:\dev\wp\caxton"
 $buildDir = "$sourceDir\release-build"
 $zipFile = "$sourceDir\$pluginSlug-v$version.zip"

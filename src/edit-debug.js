@@ -1,8 +1,7 @@
 /**
- * PostGrid Block Editor Component
+ * PostGrid Block Editor Component - Debug Version
  * 
- * Handles the editor interface for the PostGrid block,
- * including post fetching, category selection, and display settings.
+ * This version includes console logging to debug the category dropdown issue
  * 
  * @package PostGrid
  */
@@ -33,6 +32,8 @@ import apiFetch from '@wordpress/api-fetch';
  * @returns {JSX.Element} The edit component
  */
 export default function Edit( { attributes, setAttributes } ) {
+	console.log('PostGrid Edit - Attributes:', attributes);
+	
 	const { 
 		postsPerPage, 
 		orderBy, 
@@ -40,10 +41,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		selectedCategory, 
 		columns,
 		showDate,
-		showExcerpt,
-		showThumbnail,
-		showCategories,
-		showAuthor
+		showExcerpt 
 	} = attributes;
 	
 	/**
@@ -65,6 +63,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const categories = useSelect( ( select ) => {
 		const { getEntityRecords } = select( 'core' );
 		const cats = getEntityRecords( 'taxonomy', 'category', { per_page: -1 } );
+		console.log('PostGrid - Fetched categories:', cats);
 		return cats || [];
 	}, [] );
 	
@@ -82,14 +81,18 @@ export default function Edit( { attributes, setAttributes } ) {
 			category: selectedCategory,
 		} );
 		
+		console.log('PostGrid - Fetching posts with params:', params.toString());
+		
 		apiFetch( {
 			path: `/postgrid/v1/posts?${params}`,
 		} )
 			.then( ( fetchedPosts ) => {
+				console.log('PostGrid - Fetched posts:', fetchedPosts);
 				setPosts( fetchedPosts );
 				setIsLoading( false );
 			} )
-			.catch( () => {
+			.catch( (error) => {
+				console.error('PostGrid - Error fetching posts:', error);
 				setPosts( [] );
 				setIsLoading( false );
 			} );
@@ -112,6 +115,9 @@ export default function Edit( { attributes, setAttributes } ) {
 			} );
 		} );
 	}
+	
+	console.log('PostGrid - Category options:', categoryOptions);
+	console.log('PostGrid - Selected category:', selectedCategory);
 	
 	return (
 		<>
@@ -146,11 +152,20 @@ export default function Edit( { attributes, setAttributes } ) {
 						onChange={ ( value ) => setAttributes( { order: value } ) }
 					/>
 					
+					<div style={{ backgroundColor: '#f0f0f0', padding: '10px', margin: '10px 0' }}>
+						<p>DEBUG: Category dropdown should appear here:</p>
+						<p>Categories loaded: {categories.length}</p>
+						<p>Selected category: {selectedCategory}</p>
+					</div>
+					
 					<SelectControl
 						label={ __( 'Category', 'postgrid' ) }
 						value={ selectedCategory }
 						options={ categoryOptions }
-						onChange={ ( value ) => setAttributes( { selectedCategory: parseInt( value ) } ) }
+						onChange={ ( value ) => {
+							console.log('PostGrid - Category changed to:', value);
+							setAttributes( { selectedCategory: parseInt( value ) } );
+						} }
 					/>
 				</PanelBody>
 				
@@ -174,24 +189,6 @@ export default function Edit( { attributes, setAttributes } ) {
 						checked={ showExcerpt }
 						onChange={ ( value ) => setAttributes( { showExcerpt: value } ) }
 					/>
-					
-					<ToggleControl
-						label={ __( 'Show featured image', 'postgrid' ) }
-						checked={ showThumbnail }
-						onChange={ ( value ) => setAttributes( { showThumbnail: value } ) }
-					/>
-					
-					<ToggleControl
-						label={ __( 'Show categories', 'postgrid' ) }
-						checked={ showCategories }
-						onChange={ ( value ) => setAttributes( { showCategories: value } ) }
-					/>
-					
-					<ToggleControl
-						label={ __( 'Show author', 'postgrid' ) }
-						checked={ showAuthor }
-						onChange={ ( value ) => setAttributes( { showAuthor: value } ) }
-					/>
 				</PanelBody>
 			</InspectorControls>
 			
@@ -212,46 +209,22 @@ export default function Edit( { attributes, setAttributes } ) {
 					<div className="wp-block-postgrid">
 						{ posts.map( ( post ) => (
 							<article key={ post.id } className="wp-block-postgrid__item">
-								{ showThumbnail && post.featured_image && (
-									<div className="wp-block-postgrid__thumbnail">
-										<a href={ post.link }>
-											<img 
-												src={ post.featured_image.url } 
-												alt={ post.featured_image.alt || post.title }
-												className="wp-block-postgrid__image"
-											/>
-										</a>
-									</div>
+								<h3 className="wp-block-postgrid__title">
+									<a href={ post.link }>{ post.title }</a>
+								</h3>
+								
+								{ showDate && (
+									<time className="wp-block-postgrid__date">
+										{ post.date }
+									</time>
 								) }
 								
-								<div className="wp-block-postgrid__content">
-									<h3 className="wp-block-postgrid__title">
-										<a href={ post.link }>{ post.title }</a>
-									</h3>
-									
-									{ ( showDate || showAuthor ) && (
-										<div className="wp-block-postgrid__meta">
-											{ showAuthor && post.author && (
-												<span className="wp-block-postgrid__author">
-													by { post.author.name }
-												</span>
-											) }
-											{ showDate && showAuthor && ' | ' }
-											{ showDate && (
-												<time className="wp-block-postgrid__date">
-													{ post.date_formatted }
-												</time>
-											) }
-										</div>
-									) }
-									
-									{ showExcerpt && (
-										<div 
-											className="wp-block-postgrid__excerpt"
-											dangerouslySetInnerHTML={ { __html: post.excerpt } }
-										/>
-									) }
-								</div>
+								{ showExcerpt && (
+									<div 
+										className="wp-block-postgrid__excerpt"
+										dangerouslySetInnerHTML={ { __html: post.excerpt } }
+									/>
+								) }
 							</article>
 						) ) }
 					</div>

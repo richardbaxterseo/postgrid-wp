@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.12] - 2025-07-10
+
+### Added
+- Featured image support with modern gaming-inspired dark theme
+- Modern dark gradient background design
+- Category badges overlay on featured images
+- New controls for showThumbnail, showCategories, and showAuthor attributes
+- Enhanced typography with bold headings and accent colours
+- Coral/orange accent colour scheme (#FF6B6B)
+- Smooth hover effects with image scaling
+- Gradient overlays on images for text readability
+- Support for posts without featured images with fallback design
+
+### Changed
+- Complete CSS redesign with dark theme aesthetics
+- Featured images now display by default
+- Categories now display as badges on images
+- Improved content layout with overlay design on images
+- Enhanced hover states with transform effects
+- Updated card shadows and borders for depth
+
+### Fixed
+- Featured images now properly display in both editor and frontend
+- Categories position properly as overlays
+- Mobile responsive design maintained with new layout
+
 ## [0.1.11] - 2025-07-10
 
 ### Added
