@@ -44,6 +44,11 @@ class BlockRenderer {
 	 * @return string
 	 */
 	public function render( $attributes, $content = '', $block = null ) {
+		// Debug: Log raw attributes
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'PostGrid - Raw attributes: ' . print_r( $attributes, true ) );
+		}
+		
 		// Ensure frontend styles are loaded
 		if ( ! is_admin() ) {
 			wp_enqueue_style( 'postgrid-frontend' );
@@ -52,8 +57,15 @@ class BlockRenderer {
 		// Normalize attributes
 		$attributes = $this->normalize_attributes( $attributes );
 		
+		// Debug: Log normalized attributes
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'PostGrid - Normalized attributes: ' . print_r( $attributes, true ) );
+			error_log( 'PostGrid - showDate: ' . var_export( $attributes['showDate'], true ) );
+			error_log( 'PostGrid - showExcerpt: ' . var_export( $attributes['showExcerpt'], true ) );
+		}
+		
 		// Check cache first
-		$cache_key = HooksManager::get_cache_key( $attributes, array() );
+		$cache_key = HooksManager::get_cache_key( array(), $attributes );
 		$cached_output = $this->cache->get( $cache_key );
 		
 		if ( false !== $cached_output && ! HooksManager::should_bypass_cache( $attributes, array() ) ) {
@@ -98,6 +110,16 @@ class BlockRenderer {
 			'showAuthor' => false,
 			'showCategories' => false,
 		);
+		
+		// Handle boolean values explicitly
+		$boolean_attrs = array('showDate', 'showExcerpt', 'showThumbnail', 'showAuthor', 'showCategories');
+		
+		foreach ($boolean_attrs as $attr) {
+			if (isset($attributes[$attr])) {
+				// Ensure boolean type
+				$attributes[$attr] = filter_var($attributes[$attr], FILTER_VALIDATE_BOOLEAN);
+			}
+		}
 		
 		return wp_parse_args( $attributes, $defaults );
 	}
@@ -181,6 +203,13 @@ class BlockRenderer {
 	 * @param array   $attributes Block attributes.
 	 */
 	private function render_item( $post, $attributes ) {
+		// Debug: Log item attributes
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'PostGrid - Rendering item for post ' . $post->ID );
+			error_log( 'PostGrid - Item showDate: ' . var_export( $attributes['showDate'], true ) );
+			error_log( 'PostGrid - Item showExcerpt: ' . var_export( $attributes['showExcerpt'], true ) );
+		}
+		
 		$item_classes = array( 'wp-block-postgrid__item' );
 		$item_classes = apply_filters( 'postgrid_item_classes', $item_classes, $post );
 		
