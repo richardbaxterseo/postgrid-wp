@@ -74,3 +74,30 @@ ehthumbs.db
 *.key
 *.crt
 *.p12
+
+# Plugin release archives
+*.zip
+
+# Debug and test files
+debug-*.php
+test-*.php
+test-*.html
+*-diagnostic.php
+*-test.php
+
+# Development documentation
+HANDOVER-*.md
+*-SUMMARY.md
+*-INVESTIGATION.md
+BUGFIX-*.md
+DEPLOYMENT-*.md
+RELEASE_NOTES_*.md
+RELEASE_SUMMARY_*.md
+
+# Build scripts (keep only release.ps1)
+build-*.ps1
+build-*.sh
+recreate-*.ps1
+release.sh
+release.bat
+test-*.sh

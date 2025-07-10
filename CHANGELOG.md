@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.13] - 2025-07-10
+
+### Changed
+- Major repository cleanup: removed development files, debug scripts, and old documentation
+- Updated .gitignore to prevent development files from being tracked
+- Removed old release ZIP files from repository (use GitHub releases instead)
+- Kept only essential build script (release.ps1)
+
+### Removed
+- All debug and diagnostic PHP files
+- Test HTML files
+- Development handover documentation
+- Old release notes and summary files
+- Redundant build scripts
+- Previous version ZIP archives
+
 ## [0.1.12] - 2025-07-10
 
 ### Added
