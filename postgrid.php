@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/yourusername/postgrid
  * Description: A lightweight posts grid block for WordPress
  * Author: Your Name
- * Version: 0.1.2
+ * Version: 0.1.3
  * Author URI: https://yourwebsite.com/
  * Text Domain: postgrid
  * Domain Path: /languages
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'POSTGRID_VERSION', '0.1.2' );
+define( 'POSTGRID_VERSION', '0.1.3' );
 define( 'POSTGRID_PLUGIN_FILE', __FILE__ );
 define( 'POSTGRID_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'POSTGRID_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -62,14 +62,47 @@ add_action( 'init', function() {
 	// Initialize main class
 	$postgrid = new \PostGrid\PostGrid();
 	$postgrid->init();
-} );
+	
+	// IMPORTANT: Register legacy support
+	postgrid_register_legacy_support();
+}, 5 ); // Priority 5 to ensure it runs early
 
+// Register activation hook
+register_activation_hook( __FILE__, 'postgrid_activation' );
 
 /**
- * Register legacy Caxton shortcode support
+ * Plugin activation
+ */
+function postgrid_activation() {
+	// Check if build directory exists
+	if ( ! file_exists( POSTGRID_PLUGIN_DIR . 'build' ) ) {
+		// Log warning about missing build files
+		error_log( 'PostGrid: Build directory not found. Please run npm install && npm run build' );
+	}
+	
+	// Flush rewrite rules
+	flush_rewrite_rules();
+}
+
+/**
+ * Register legacy Caxton block support
+ * This ensures the caxton/posts-grid block is recognised
  */
 function postgrid_register_legacy_support() {
-	// Support common Caxton block variations
+	// Register the caxton/posts-grid block as an alias
+	if ( WP_Block_Type_Registry::get_instance()->is_registered( 'postgrid/postgrid' ) ) {
+		// Get the registered PostGrid block
+		$postgrid_block = WP_Block_Type_Registry::get_instance()->get_registered( 'postgrid/postgrid' );
+		
+		// Register it also as caxton/posts-grid
+		register_block_type( 'caxton/posts-grid', array(
+			'render_callback' => array( $postgrid_block, 'render_callback' ),
+			'attributes' => $postgrid_block->attributes,
+			'supports' => $postgrid_block->supports,
+		) );
+	}
+	
+	// Support common Caxton block variations via shortcodes
 	$caxton_blocks = array(
 		'caxton/posts',
 		'caxton/posts-grid', 
@@ -78,11 +111,58 @@ function postgrid_register_legacy_support() {
 	);
 	
 	foreach ( $caxton_blocks as $block_name ) {
-		add_shortcode( $block_name, 'postgrid_handle_legacy_caxton_shortcode' );
+		add_shortcode( str_replace( '/', '_', $block_name ), 'postgrid_handle_legacy_caxton_shortcode' );
 	}
 	
 	// Also support Gutenberg block comment format
 	add_filter( 'render_block', 'postgrid_convert_caxton_blocks', 10, 2 );
+	
+	// Add filter to handle block registration
+	add_filter( 'block_type_metadata', 'postgrid_filter_block_metadata', 10, 1 );
+}
+
+/**
+ * Filter block metadata to support Caxton blocks
+ */
+function postgrid_filter_block_metadata( $metadata ) {
+	// If someone is trying to use caxton/posts-grid, redirect to postgrid
+	if ( isset( $metadata['name'] ) && $metadata['name'] === 'caxton/posts-grid' ) {
+		$metadata['name'] = 'postgrid/postgrid';
+	}
+	return $metadata;
+}
+
+/**
+ * Convert Caxton blocks in content
+ */
+function postgrid_convert_caxton_blocks( $block_content, $block ) {
+	if ( isset( $block['blockName'] ) && strpos( $block['blockName'], 'caxton/' ) === 0 ) {
+		// Check if it's a posts grid variant
+		if ( in_array( $block['blockName'], array( 'caxton/posts-grid', 'caxton/posts', 'caxton/post-grid' ) ) ) {
+			// Get PostGrid instance and render with converted attributes
+			$postgrid = new \PostGrid\PostGrid();
+			$converted_attrs = postgrid_convert_caxton_attributes( $block['attrs'] ?? array() );
+			return $postgrid->render_block( $converted_attrs );
+		}
+	}
+	return $block_content;
+}
+
+/**
+ * Convert Caxton attributes to PostGrid format
+ */
+function postgrid_convert_caxton_attributes( $caxton_attrs ) {
+	$postgrid_attrs = array(
+		'postsPerPage' => $caxton_attrs['posts'] ?? $caxton_attrs['postsPerPage'] ?? 6,
+		'orderBy' => $caxton_attrs['orderby'] ?? $caxton_attrs['orderBy'] ?? 'date',
+		'order' => $caxton_attrs['order'] ?? 'desc',
+		'selectedCategory' => $caxton_attrs['category'] ?? $caxton_attrs['selectedCategory'] ?? 0,
+		'columns' => $caxton_attrs['columns'] ?? 3,
+		'showDate' => $caxton_attrs['showDate'] ?? true,
+		'showExcerpt' => $caxton_attrs['showExcerpt'] ?? true,
+	);
+	
+	return $postgrid_attrs;
 }
 
 /**
@@ -93,120 +173,10 @@ function postgrid_handle_legacy_caxton_shortcode( $atts ) {
 	// Default to empty array if no attributes
 	$atts = is_array( $atts ) ? $atts : array();
 	
-	// Map common Caxton attributes to PostGrid attributes
-	$mapped_atts = array();
+	// Convert attributes
+	$converted_attrs = postgrid_convert_caxton_attributes( $atts );
 	
-	// Handle different attribute naming conventions
-	if ( isset( $atts['posts'] ) ) {
-		$mapped_atts['postsPerPage'] = intval( $atts['posts'] );
-	} elseif ( isset( $atts['count'] ) ) {
-		$mapped_atts['postsPerPage'] = intval( $atts['count'] );
-	} elseif ( isset( $atts['posts_per_page'] ) ) {
-		$mapped_atts['postsPerPage'] = intval( $atts['posts_per_page'] );
-	}
-	
-	// Map columns
-	if ( isset( $atts['columns'] ) ) {
-		$mapped_atts['columns'] = intval( $atts['columns'] );
-	} elseif ( isset( $atts['cols'] ) ) {
-		$mapped_atts['columns'] = intval( $atts['cols'] );
-	}
-	
-	// Map category
-	if ( isset( $atts['category'] ) ) {
-		// Handle both ID and slug
-		if ( is_numeric( $atts['category'] ) ) {
-			$mapped_atts['selectedCategory'] = intval( $atts['category'] );
-		} else {
-			$category = get_category_by_slug( $atts['category'] );
-			if ( $category ) {
-				$mapped_atts['selectedCategory'] = $category->term_id;
-			}
-		}
-	} elseif ( isset( $atts['cat'] ) ) {
-		$mapped_atts['selectedCategory'] = intval( $atts['cat'] );
-	}
-	
-	// Map order settings
-	if ( isset( $atts['orderby'] ) ) {
-		$mapped_atts['orderBy'] = sanitize_text_field( $atts['orderby'] );
-	}
-	
-	if ( isset( $atts['order'] ) ) {
-		$mapped_atts['order'] = strtolower( $atts['order'] ) === 'asc' ? 'asc' : 'desc';
-	}
-	
-	// Map display settings
-	if ( isset( $atts['show_date'] ) ) {
-		$mapped_atts['showDate'] = filter_var( $atts['show_date'], FILTER_VALIDATE_BOOLEAN );
-	}
-	
-	if ( isset( $atts['show_excerpt'] ) ) {
-		$mapped_atts['showExcerpt'] = filter_var( $atts['show_excerpt'], FILTER_VALIDATE_BOOLEAN );
-	}
-	
-	// Set defaults for any missing attributes
-	$defaults = array(
-		'postsPerPage' => 6,
-		'orderBy' => 'date',
-		'order' => 'desc',
-		'selectedCategory' => 0,
-		'columns' => 3,
-		'showDate' => true,
-		'showExcerpt' => true
-	);
-	
-	$final_atts = wp_parse_args( $mapped_atts, $defaults );
-	
-	// Use the existing PostGrid render method
+	// Get PostGrid instance and render
 	$postgrid = new \PostGrid\PostGrid();
-	return $postgrid->render_block( $final_atts );
+	return $postgrid->render_block( $converted_attrs );
 }
-
-/**
- * Convert Caxton Gutenberg blocks to PostGrid blocks
- */
-function postgrid_convert_caxton_blocks( $block_content, $block ) {
-	// Check if this is a Caxton block
-	if ( strpos( $block['blockName'], 'caxton/' ) === 0 ) {
-		// Create PostGrid block with converted attributes
-		$postgrid = new \PostGrid\PostGrid();
-		
-		// Map block attributes
-		$mapped_atts = array();
-		$attrs = $block['attrs'] ?? array();
-		
-		// Similar mapping as shortcodes
-		if ( isset( $attrs['posts'] ) ) {
-			$mapped_atts['postsPerPage'] = intval( $attrs['posts'] );
-		}
-		
-		if ( isset( $attrs['columns'] ) ) {
-			$mapped_atts['columns'] = intval( $attrs['columns'] );
-		}
-		
-		if ( isset( $attrs['categories'] ) && is_array( $attrs['categories'] ) && ! empty( $attrs['categories'] ) ) {
-			$mapped_atts['selectedCategory'] = intval( $attrs['categories'][0] );
-		}
-		
-		// Set defaults
-		$defaults = array(
-			'postsPerPage' => 6,
-			'orderBy' => 'date',
-			'order' => 'desc',
-			'selectedCategory' => 0,
-			'columns' => 3,
-			'showDate' => true,
-			'showExcerpt' => true
-		);
-		
-		$final_atts = wp_parse_args( $mapped_atts, $defaults );
-		
-		return $postgrid->render_block( $final_atts );
-	}
-	
-	return $block_content;
-}
-
-// Register legacy support on init
-add_action( 'init', 'postgrid_register_legacy_support', 20 );

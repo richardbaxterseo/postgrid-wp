@@ -2,6 +2,26 @@
 
 All notable changes to PostGrid will be documented in this file.
 
+## [0.1.3] - 2025-01-10
+
+### Fixed
+- Fixed "caxton/posts-grid" block not found error by registering proper block aliases
+- Added proper activation hook and legacy block support
+- Fixed asset enqueueing with fallback logic for missing build directory
+- Enhanced block registration to support both PostGrid and Caxton namespaces
+- Added diagnostic tool for troubleshooting block registration issues
+
+### Changed
+- Updated block.json to reference build directory for compiled assets
+- Improved error logging and handling throughout the plugin
+- Enhanced PostGrid class with better style enqueueing and block compatibility
+- Added support for dynamic style loading in block rendering
+
+### Added
+- Caxton block compatibility layer for seamless migration
+- Block attribute conversion between Caxton and PostGrid formats
+- Diagnostic tool (postgrid-diagnostic.php) for debugging
+
 ## [0.1.2] - 2025-01-10
 
 ### Fixed

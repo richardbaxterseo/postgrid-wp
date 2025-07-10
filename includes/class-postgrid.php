@@ -15,27 +15,121 @@ class PostGrid {
 	 * Initialize the plugin
 	 */
 	public function init() {
-		// Register block
-		register_block_type( POSTGRID_PLUGIN_DIR . 'block.json', array(
+		// Check if we're using build or src directory
+		$script_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/index.js' ) ? 'build' : 'src';
+		$block_json_path = POSTGRID_PLUGIN_DIR . 'block.json';
+		
+		// Register block with proper asset handling
+		$result = register_block_type( $block_json_path, array(
 			'render_callback' => array( $this, 'render_block' ),
 		) );
+		
+		// If registration failed, log error
+		if ( ! $result ) {
+			error_log( 'PostGrid: Failed to register block type from ' . $block_json_path );
+		}
 		
 		// Register REST API endpoint
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		
 		// Ensure frontend styles are loaded
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
+		
+		// Ensure editor styles are loaded
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_assets' ) );
+		
+		// Add support for caxton/posts-grid blocks
+		add_action( 'init', array( $this, 'register_caxton_compatibility' ), 20 );
+	}
+	
+	/**
+	 * Register Caxton compatibility
+	 */
+	public function register_caxton_compatibility() {
+		// Check if caxton/posts-grid is being used
+		if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'caxton/posts-grid' ) ) {
+			// Register caxton/posts-grid as an alias to postgrid/postgrid
+			register_block_type( 'caxton/posts-grid', array(
+				'render_callback' => array( $this, 'render_caxton_block' ),
+				'attributes' => array(
+					'postsPerPage' => array(
+						'type' => 'number',
+						'default' => 6
+					),
+					'orderBy' => array(
+						'type' => 'string',
+						'default' => 'date'
+					),
+					'order' => array(
+						'type' => 'string',
+						'default' => 'desc'
+					),
+					'selectedCategory' => array(
+						'type' => 'number',
+						'default' => 0
+					),
+					'columns' => array(
+						'type' => 'number',
+						'default' => 3
+					),
+					'showDate' => array(
+						'type' => 'boolean',
+						'default' => true
+					),
+					'showExcerpt' => array(
+						'type' => 'boolean',
+						'default' => true
+					)
+				),
+			) );
+		}
+	}
+	
+	/**
+	 * Render Caxton block (wrapper for render_block)
+	 */
+	public function render_caxton_block( $attributes ) {
+		return $this->render_block( $attributes );
+	}
+	
+	/**
+	 * Enqueue editor assets
+	 */
+	public function enqueue_editor_assets() {
+		$script_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/index.js' ) ? 'build' : 'src';
+		
+		// Register and enqueue editor script
+		wp_register_script(
+			'postgrid-editor',
+			POSTGRID_PLUGIN_URL . $script_dir . '/index.js',
+			array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-i18n' ),
+			POSTGRID_VERSION,
+			true
+		);
+		
+		wp_enqueue_script( 'postgrid-editor' );
+		
+		// Enqueue editor styles
+		wp_enqueue_style(
+			'postgrid-editor-styles',
+			POSTGRID_PLUGIN_URL . $script_dir . '/style.css',
+			array( 'wp-edit-blocks' ),
+			POSTGRID_VERSION
+		);
 	}
 	
 	/**
 	 * Enqueue frontend styles
 	 */
 	public function enqueue_frontend_styles() {
-		// Only enqueue if we have the PostGrid block on the page
-		if ( has_block( 'postgrid/postgrid' ) ) {
+		// Check for both postgrid and caxton blocks
+		if ( has_block( 'postgrid/postgrid' ) || has_block( 'caxton/posts-grid' ) ) {
+			$style_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/style-index.css' ) ? 'build' : 'src';
+			$style_file = $style_dir === 'build' ? 'style-index.css' : 'style.css';
+			
 			wp_enqueue_style(
 				'postgrid-frontend-styles',
-				POSTGRID_PLUGIN_URL . 'src/style.css',
+				POSTGRID_PLUGIN_URL . $style_dir . '/' . $style_file,
 				array(),
 				POSTGRID_VERSION
 			);
@@ -106,6 +200,9 @@ class PostGrid {
 	 * Render the block
 	 */
 	public function render_block( $attributes ) {
+		// Ensure styles are loaded for dynamic blocks
+		$this->ensure_styles_loaded();
+		
 		$args = array(
 			'posts_per_page' => $attributes['postsPerPage'] ?? 6,
 			'orderby'        => $attributes['orderBy'] ?? 'date',
@@ -127,7 +224,7 @@ class PostGrid {
 		$show_date = $attributes['showDate'] ?? true;
 		$show_excerpt = $attributes['showExcerpt'] ?? true;
 		
-		$output = '<div class="wp-block-postgrid columns-' . esc_attr( $columns ) . '">';
+		$output = '<div class="wp-block-postgrid-postgrid columns-' . esc_attr( $columns ) . '">';
 		
 		foreach ( $posts as $post ) {
 			$output .= '<article class="wp-block-postgrid__item">';
@@ -154,5 +251,22 @@ class PostGrid {
 		$output .= '</div>';
 		
 		return $output;
+	}
+	
+	/**
+	 * Ensure styles are loaded for dynamic block rendering
+	 */
+	private function ensure_styles_loaded() {
+		if ( ! wp_style_is( 'postgrid-frontend-styles', 'enqueued' ) ) {
+			$style_dir = file_exists( POSTGRID_PLUGIN_DIR . 'build/style-index.css' ) ? 'build' : 'src';
+			$style_file = $style_dir === 'build' ? 'style-index.css' : 'style.css';
+			
+			wp_enqueue_style(
+				'postgrid-frontend-styles',
+				POSTGRID_PLUGIN_URL . $style_dir . '/' . $style_file,
+				array(),
+				POSTGRID_VERSION
+			);
+		}
 	}
 }
