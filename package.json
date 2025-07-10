@@ -1,8 +1,8 @@
 {
 	"name": "postgrid",
-	"version": "1.0.0",
+	"version": "0.1.8",
 	"description": "A lightweight posts grid block for WordPress",
-	"author": "Your Name",
+	"author": "Richard Baxter",
 	"license": "GPL-2.0-or-later",
 	"scripts": {
 		"build": "wp-scripts build",

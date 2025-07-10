@@ -1,4 +1,13 @@
 /**
+ * PostGrid Block Editor Component
+ * 
+ * Handles the editor interface for the PostGrid block,
+ * including post fetching, category selection, and display settings.
+ * 
+ * @package PostGrid
+ */
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
@@ -16,7 +25,12 @@ import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
- * Editor component
+ * Edit component for PostGrid block
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.attributes - Block attributes
+ * @param {Function} props.setAttributes - Function to update attributes
+ * @returns {JSX.Element} The edit component
  */
 export default function Edit( { attributes, setAttributes } ) {
 	const { 
@@ -29,17 +43,32 @@ export default function Edit( { attributes, setAttributes } ) {
 		showExcerpt 
 	} = attributes;
 	
+	/**
+	 * State for storing fetched posts
+	 * @type {[Array, Function]}
+	 */
 	const [ posts, setPosts ] = useState( [] );
+	
+	/**
+	 * State for tracking loading status
+	 * @type {[boolean, Function]}
+	 */
 	const [ isLoading, setIsLoading ] = useState( false );
 	
-	// Fetch categories
+	/**
+	 * Fetch categories from WordPress data store
+	 * Uses useSelect hook to get all categories
+	 */
 	const categories = useSelect( ( select ) => {
 		const { getEntityRecords } = select( 'core' );
 		const cats = getEntityRecords( 'taxonomy', 'category', { per_page: -1 } );
 		return cats || [];
 	}, [] );
 	
-	// Fetch posts when attributes change
+	/**
+	 * Effect hook to fetch posts when attributes change
+	 * Triggers API call to PostGrid REST endpoint
+	 */
 	useEffect( () => {
 		setIsLoading( true );
 		

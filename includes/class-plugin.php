@@ -287,6 +287,10 @@ class Plugin {
 			return;
 		}
 		
+		// Get available post types
+		$post_types = get_post_types( array( 'public' => true ), 'objects' );
+		$supported_post_types = get_option( 'postgrid_supported_post_types', array( 'post' ) );
+		
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
@@ -310,7 +314,70 @@ class Plugin {
 								min="0" 
 								step="60" />
 							<p class="description">
-								<?php esc_html_e( 'Cache expiration time in seconds.', 'postgrid' ); ?>
+								<?php esc_html_e( 'Cache expiration time in seconds. Set to 0 to disable caching.', 'postgrid' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="postgrid_enable_rest_api">
+								<?php esc_html_e( 'Enable REST API', 'postgrid' ); ?>
+							</label>
+						</th>
+						<td>
+							<input type="checkbox" 
+								id="postgrid_enable_rest_api" 
+								name="postgrid_enable_rest_api" 
+								value="1" 
+								<?php checked( get_option( 'postgrid_enable_rest_api', true ) ); ?> />
+							<label for="postgrid_enable_rest_api">
+								<?php esc_html_e( 'Enable REST API endpoints for PostGrid', 'postgrid' ); ?>
+							</label>
+							<p class="description">
+								<?php esc_html_e( 'Required for the block editor to function properly.', 'postgrid' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<?php esc_html_e( 'Supported Post Types', 'postgrid' ); ?>
+						</th>
+						<td>
+							<fieldset>
+								<legend class="screen-reader-text">
+									<span><?php esc_html_e( 'Supported Post Types', 'postgrid' ); ?></span>
+								</legend>
+								<?php foreach ( $post_types as $post_type ) : ?>
+									<?php if ( $post_type->name === 'attachment' ) continue; ?>
+									<label>
+										<input type="checkbox" 
+											name="postgrid_supported_post_types[]" 
+											value="<?php echo esc_attr( $post_type->name ); ?>"
+											<?php checked( in_array( $post_type->name, $supported_post_types, true ) ); ?> />
+										<?php echo esc_html( $post_type->labels->name ); ?>
+									</label><br />
+								<?php endforeach; ?>
+							</fieldset>
+							<p class="description">
+								<?php esc_html_e( 'Select which post types can be displayed in PostGrid blocks.', 'postgrid' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="postgrid_rate_limit">
+								<?php esc_html_e( 'API Rate Limit', 'postgrid' ); ?>
+							</label>
+						</th>
+						<td>
+							<input type="number" 
+								id="postgrid_rate_limit" 
+								name="postgrid_rate_limit" 
+								value="<?php echo esc_attr( get_option( 'postgrid_rate_limit', 60 ) ); ?>" 
+								min="1" 
+								max="1000" />
+							<p class="description">
+								<?php esc_html_e( 'Maximum number of API requests per minute per IP address.', 'postgrid' ); ?>
 							</p>
 						</td>
 					</tr>

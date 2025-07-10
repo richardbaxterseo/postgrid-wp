@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: PostGrid
- * Plugin URI: https://github.com/yourusername/postgrid
+ * Plugin URI: https://github.com/richardbaxterseo/postgrid-wp
  * Description: A lightweight posts grid block for WordPress
- * Author: Your Name
+ * Author: Richard Baxter
  * Version: 0.1.8
- * Author URI: https://yourwebsite.com/
+ * Author URI: https://richardbaxter.co/
  * Text Domain: postgrid
  * Domain Path: /languages
  * Requires at least: 6.0
