@@ -7,18 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Unit tests for rate limiting, asset loading, and cache management
-- Shared CacheManager instance across plugin components
-- CacheManager hooks initialization for automatic cache invalidation
-
-### Changed  
-- Rate limiting now properly uses `postgrid_rate_limit` option from settings
-- REST controller uses shared CacheManager instance instead of creating its own
-
-### Fixed
-- CacheManager hooks are now properly initialized on plugin load
-
 ## [0.1.8] - 2025-07-10
 
 ### Added
@@ -27,14 +15,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `build-release.sh` for Unix/Linux bash
 - Production-ready ZIP package generation
 - Automated file collection for deployment
+- Unit tests for rate limiting, asset loading, and cache management
+- Shared CacheManager instance across plugin components
+- CacheManager hooks initialization for automatic cache invalidation
 
 ### Changed
 - Improved release process with automated packaging
 - Build scripts now use absolute paths for reliability
+- Rate limiting now properly uses `postgrid_rate_limit` option from settings
+- REST controller uses shared CacheManager instance instead of creating its own
 
 ### Fixed
 - Build directory is now included in release packages
 - All required files are properly packaged for staging/production deployment
+- Improved boolean attribute handling in block settings
+- Fixed cache key generation issues
+- CacheManager hooks are now properly initialized on plugin load
 
 ## [0.1.7] - 2025-07-10
 
