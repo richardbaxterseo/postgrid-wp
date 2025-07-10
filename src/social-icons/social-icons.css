@@ -1,0 +1,116 @@
+/**
+ * Lightweight Social Icons CSS Library
+ * Inline SVG icons with CSS styling - no external dependencies
+ * Total size: ~2KB minified
+ */
+
+/* Base social icon container */
+.postgrid-social-icons {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 1rem;
+	align-items: center;
+}
+
+/* Social icon link wrapper */
+.postgrid-social-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	color: #666;
+	transition: color 0.2s ease, transform 0.2s ease;
+	text-decoration: none;
+}
+
+.postgrid-social-icon:hover {
+	transform: translateY(-2px);
+}
+
+/* Icon size control */
+.postgrid-social-icon svg {
+	width: 1.25rem;
+	height: 1.25rem;
+	fill: currentColor;
+}
+
+/* Size variations */
+.postgrid-social-icon--small svg {
+	width: 1rem;
+	height: 1rem;
+}
+
+.postgrid-social-icon--large svg {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.postgrid-social-icon--2x svg {
+	width: 2rem;
+	height: 2rem;
+}
+
+/* Individual brand colors on hover */
+.postgrid-social-icon--facebook:hover {
+	color: #1877f2;
+}
+
+.postgrid-social-icon--instagram:hover {
+	color: #e4405f;
+}
+
+.postgrid-social-icon--twitter:hover {
+	color: #1da1f2;
+}
+
+.postgrid-social-icon--linkedin:hover {
+	color: #0077b5;
+}
+
+.postgrid-social-icon--youtube:hover {
+	color: #ff0000;
+}
+
+.postgrid-social-icon--pinterest:hover {
+	color: #bd081c;
+}
+
+.postgrid-social-icon--rss:hover {
+	color: #ff9500;
+}
+
+.postgrid-social-icon--email:hover {
+	color: #333;
+}
+
+.postgrid-social-icon--threads:hover {
+	color: #000;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	.postgrid-social-icon {
+		color: #999;
+	}
+	
+	.postgrid-social-icon--email:hover {
+		color: #fff;
+	}
+	
+	.postgrid-social-icon--threads:hover {
+		color: #fff;
+	}
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.postgrid-social-icons {
+		gap: 0.5rem;
+	}
+	
+	.postgrid-social-icon {
+		width: 2rem;
+		height: 2rem;
+	}
+}

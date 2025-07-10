@@ -55,3 +55,150 @@ add_action( 'init', function() {
 	$postgrid = new \PostGrid\PostGrid();
 	$postgrid->init();
 } );
+
+
+/**
+ * Register legacy Caxton shortcode support
+ */
+function postgrid_register_legacy_support() {
+	// Support common Caxton block variations
+	$caxton_blocks = array(
+		'caxton/posts',
+		'caxton/posts-grid', 
+		'caxton/post-grid',
+		'caxton/grid'
+	);
+	
+	foreach ( $caxton_blocks as $block_name ) {
+		add_shortcode( $block_name, 'postgrid_handle_legacy_caxton_shortcode' );
+	}
+	
+	// Also support Gutenberg block comment format
+	add_filter( 'render_block', 'postgrid_convert_caxton_blocks', 10, 2 );
+}
+
+/**
+ * Handle legacy Caxton shortcodes
+ * Converts Caxton attributes to PostGrid format
+ */
+function postgrid_handle_legacy_caxton_shortcode( $atts ) {
+	// Default to empty array if no attributes
+	$atts = is_array( $atts ) ? $atts : array();
+	
+	// Map common Caxton attributes to PostGrid attributes
+	$mapped_atts = array();
+	
+	// Handle different attribute naming conventions
+	if ( isset( $atts['posts'] ) ) {
+		$mapped_atts['postsPerPage'] = intval( $atts['posts'] );
+	} elseif ( isset( $atts['count'] ) ) {
+		$mapped_atts['postsPerPage'] = intval( $atts['count'] );
+	} elseif ( isset( $atts['posts_per_page'] ) ) {
+		$mapped_atts['postsPerPage'] = intval( $atts['posts_per_page'] );
+	}
+	
+	// Map columns
+	if ( isset( $atts['columns'] ) ) {
+		$mapped_atts['columns'] = intval( $atts['columns'] );
+	} elseif ( isset( $atts['cols'] ) ) {
+		$mapped_atts['columns'] = intval( $atts['cols'] );
+	}
+	
+	// Map category
+	if ( isset( $atts['category'] ) ) {
+		// Handle both ID and slug
+		if ( is_numeric( $atts['category'] ) ) {
+			$mapped_atts['selectedCategory'] = intval( $atts['category'] );
+		} else {
+			$category = get_category_by_slug( $atts['category'] );
+			if ( $category ) {
+				$mapped_atts['selectedCategory'] = $category->term_id;
+			}
+		}
+	} elseif ( isset( $atts['cat'] ) ) {
+		$mapped_atts['selectedCategory'] = intval( $atts['cat'] );
+	}
+	
+	// Map order settings
+	if ( isset( $atts['orderby'] ) ) {
+		$mapped_atts['orderBy'] = sanitize_text_field( $atts['orderby'] );
+	}
+	
+	if ( isset( $atts['order'] ) ) {
+		$mapped_atts['order'] = strtolower( $atts['order'] ) === 'asc' ? 'asc' : 'desc';
+	}
+	
+	// Map display settings
+	if ( isset( $atts['show_date'] ) ) {
+		$mapped_atts['showDate'] = filter_var( $atts['show_date'], FILTER_VALIDATE_BOOLEAN );
+	}
+	
+	if ( isset( $atts['show_excerpt'] ) ) {
+		$mapped_atts['showExcerpt'] = filter_var( $atts['show_excerpt'], FILTER_VALIDATE_BOOLEAN );
+	}
+	
+	// Set defaults for any missing attributes
+	$defaults = array(
+		'postsPerPage' => 6,
+		'orderBy' => 'date',
+		'order' => 'desc',
+		'selectedCategory' => 0,
+		'columns' => 3,
+		'showDate' => true,
+		'showExcerpt' => true
+	);
+	
+	$final_atts = wp_parse_args( $mapped_atts, $defaults );
+	
+	// Use the existing PostGrid render method
+	$postgrid = new \PostGrid\PostGrid();
+	return $postgrid->render_block( $final_atts );
+}
+
+/**
+ * Convert Caxton Gutenberg blocks to PostGrid blocks
+ */
+function postgrid_convert_caxton_blocks( $block_content, $block ) {
+	// Check if this is a Caxton block
+	if ( strpos( $block['blockName'], 'caxton/' ) === 0 ) {
+		// Create PostGrid block with converted attributes
+		$postgrid = new \PostGrid\PostGrid();
+		
+		// Map block attributes
+		$mapped_atts = array();
+		$attrs = $block['attrs'] ?? array();
+		
+		// Similar mapping as shortcodes
+		if ( isset( $attrs['posts'] ) ) {
+			$mapped_atts['postsPerPage'] = intval( $attrs['posts'] );
+		}
+		
+		if ( isset( $attrs['columns'] ) ) {
+			$mapped_atts['columns'] = intval( $attrs['columns'] );
+		}
+		
+		if ( isset( $attrs['categories'] ) && is_array( $attrs['categories'] ) && ! empty( $attrs['categories'] ) ) {
+			$mapped_atts['selectedCategory'] = intval( $attrs['categories'][0] );
+		}
+		
+		// Set defaults
+		$defaults = array(
+			'postsPerPage' => 6,
+			'orderBy' => 'date',
+			'order' => 'desc',
+			'selectedCategory' => 0,
+			'columns' => 3,
+			'showDate' => true,
+			'showExcerpt' => true
+		);
+		
+		$final_atts = wp_parse_args( $mapped_atts, $defaults );
+		
+		return $postgrid->render_block( $final_atts );
+	}
+	
+	return $block_content;
+}
+
+// Register legacy support on init
+add_action( 'init', 'postgrid_register_legacy_support', 20 );
