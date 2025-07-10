@@ -29,14 +29,22 @@ define( 'POSTGRID_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 spl_autoload_register( function ( $class ) {
 	$prefix = 'PostGrid\\';
 	$base_dir = POSTGRID_PLUGIN_DIR . 'includes/';
+	
+	// Does the class use the namespace prefix?
 	$len = strlen( $prefix );
 	if ( strncmp( $prefix, $class, $len ) !== 0 ) {
 		return;
 	}
 
+	// Get the relative class name
 	$relative_class = substr( $class, $len );
-	$file = $base_dir . 'class-postgrid.php';
+	
+	// Replace namespace separators with directory separators
+	// and prefix with 'class-' and suffix with '.php'
+	$class_file = 'class-' . str_replace( '\\', '-', strtolower( $relative_class ) ) . '.php';
+	$file = $base_dir . $class_file;
 
+	// If the file exists, require it
 	if ( file_exists( $file ) ) {
 		require $file;
 	}
